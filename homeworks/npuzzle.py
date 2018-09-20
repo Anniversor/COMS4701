@@ -246,10 +246,30 @@ def best_first(state, heuristic):
     fringe = []
     closed = set()
     parents = {}
+    solution = None
+    result = None
+    cost =  heuristic(state)
+    heappush(fringe,(cost,state))
+    while fringe:
+        node = heappop(fringe)[1:][0]
+        if node not in closed:
+            closed.add(node)
+            states_expanded+=1
+            if goal_test(node):
+                solution = []
+                result = node
+                break
+            for child_node in get_successors(node):
+                if child_node[1] not in closed:
+                    cost = heuristic(child_node[1])
+                    heappush(fringe,(cost,child_node[1]))
+                    parents[child_node[1]]=[node,child_node[0]]
+                    max_fringe = max(len(fringe), max_fringe)
+    while(result!=state):
+        solution.insert(0,parents[result][1])
+        result = parents[result][0]
 
-    #YOUR CODE HERE
-
-    return None, states_expanded, max_fringe # No solution found
+    return solution, states_expanded, max_fringe # No solution found
 
 
 def astar(state, heuristic):
@@ -273,10 +293,29 @@ def astar(state, heuristic):
     closed = set()
     parents = {}
     costs = {}
+    costs[state] = 0
+    heappush(fringe,(0,state))
+    while fringe:
+        node = heappop(fringe)[1:][0]
+        if node not in closed:
+            closed.add(node)
+            states_expanded+=1
+            if goal_test(node):
+                solution = []
+                result = node
+                break
+            for child_node in get_successors(node):
+                if child_node[1] not in closed:
+                    cost = heuristic(child_node[1])+costs[node]+1
+                    costs[child_node[1]] = cost
+                    heappush(fringe,(cost,child_node[1]))
+                    parents[child_node[1]]=[node,child_node[0]]
+                    max_fringe = max(len(fringe), max_fringe)
+    while(result!=state):
+        solution.insert(0,parents[result][1])
+        result = parents[result][0]
 
-    #YOUR CODE HERE
-
-    return None, states_expanded, max_fringe # No solution found
+    return solution, states_expanded, max_fringe # No solution found
 
 
 def print_result(solution, states_expanded, max_fringe):
@@ -294,19 +333,16 @@ def print_result(solution, states_expanded, max_fringe):
 
 if __name__ == "__main__":
 
-    test_state1 = ((0,1,2),(3,4,5),(6,7,8))
-
-    goal_test(test_state1)
 
     #Easy test case
-    test_state = ((1, 4, 2),
-                  (0, 5, 8), 
-                  (3, 6, 7))  
+    # test_state = ((1, 4, 2),
+    #               (0, 5, 8), 
+    #               (3, 6, 7))  
 
     #More difficult test case
-    #test_state = ((7, 2, 4),
-    #              (5, 0, 6), 
-    #              (8, 3, 1))  
+    test_state = ((7, 2, 4),
+                 (5, 0, 6), 
+                 (8, 3, 1))  
 
     print(state_to_string(test_state))
     print()
@@ -321,34 +357,34 @@ if __name__ == "__main__":
     print("Total time: {0:.3f}s".format(end-start))
 
     print() 
-    print("====DFS====") 
+    # print("====DFS====") 
+    # start = time.time()
+    # solution, states_expanded, max_fringe = dfs(test_state)
+    # end = time.time()
+    # print_result(solution, states_expanded, max_fringe)
+    # print("Total time: {0:.3f}s".format(end-start))
+
+    print() 
+    print("====Greedy Best-First (Misplaced Tiles Heuristic)====") 
     start = time.time()
-    solution, states_expanded, max_fringe = dfs(test_state)
+    solution, states_expanded, max_fringe = best_first(test_state, misplaced_heuristic)
+    end = time.time()
+    print_result(solution, states_expanded, max_fringe)
+    print("Total time: {0:.3f}s".format(end-start))
+    
+    print() 
+    print("====A* (Misplaced Tiles Heuristic)====") 
+    start = time.time()
+    solution, states_expanded, max_fringe = astar(test_state, misplaced_heuristic)
     end = time.time()
     print_result(solution, states_expanded, max_fringe)
     print("Total time: {0:.3f}s".format(end-start))
 
-    #print() 
-    #print("====Greedy Best-First (Misplaced Tiles Heuristic)====") 
-    #start = time.time()
-    #solution, states_expanded, max_fringe = best_first(test_state, misplaced_heuristic)
-    #end = time.time()
-    #print_result(solution, states_expanded, max_fringe)
-    #print("Total time: {0:.3f}s".format(end-start))
-    
-    #print() 
-    #print("====A* (Misplaced Tiles Heuristic)====") 
-    #start = time.time()
-    #solution, states_expanded, max_fringe = astar(test_state, misplaced_heuristic)
-    #end = time.time()
-    #print_result(solution, states_expanded, max_fringe)
-    #print("Total time: {0:.3f}s".format(end-start))
-
-    #print() 
-    #print("====A* (Total Manhattan Distance Heuristic)====") 
-    #start = time.time()
-    #solution, states_expanded, max_fringe = astar(test_state, manhattan_heuristic)
-    #end = time.time()
-    #print_result(solution, states_expanded, max_fringe)
-    #print("Total time: {0:.3f}s".format(end-start))
+    print() 
+    print("====A* (Total Manhattan Distance Heuristic)====") 
+    start = time.time()
+    solution, states_expanded, max_fringe = astar(test_state, manhattan_heuristic)
+    end = time.time()
+    print_result(solution, states_expanded, max_fringe)
+    print("Total time: {0:.3f}s".format(end-start))
 
