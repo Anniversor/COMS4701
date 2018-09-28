@@ -357,12 +357,12 @@ if __name__ == "__main__":
     print("Total time: {0:.3f}s".format(end-start))
 
     print() 
-    # print("====DFS====") 
-    # start = time.time()
-    # solution, states_expanded, max_fringe = dfs(test_state)
-    # end = time.time()
-    # print_result(solution, states_expanded, max_fringe)
-    # print("Total time: {0:.3f}s".format(end-start))
+    print("====DFS====") 
+    start = time.time()
+    solution, states_expanded, max_fringe = dfs(test_state)
+    end = time.time()
+    print_result(solution, states_expanded, max_fringe)
+    print("Total time: {0:.3f}s".format(end-start))
 
     print() 
     print("====Greedy Best-First (Misplaced Tiles Heuristic)====") 
