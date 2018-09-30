@@ -14,9 +14,9 @@ b) The size should be the number of the combinations. The size of the state spac
 4. a) No.
 b) The combination of insect' location and the time step it's at.
 c) $M*N*t$. We can use the Manhattan distance between the insect and the goal as our non-trivial admissible heuristic.
-5. a) It becomes episodic.
-b) The insects' locations, the direction and  the number of steps it moves in the latest time step. Notice  that the direction can be "none" because it can stay still.
-c) . We can use the Manhattan distance between the insect and the goal as our non-trivial admissible heuristic.
+5. a) It becomes episodic because we need to know the insect's action in the privious time step to determine the next best action it can take.
+b) The insects' locations, the direction and  the number of steps it moves in the latest time step. 
+c)Suppose the insect's most steps number in one direction is v, then the size would be $M*N*4*v$. We can use the Manhattan distance between the insect and the goal as our non-trivial admissible heuristic.
 6. a)No.
 b)The location of the insect and the time steps it spends in the pesticide squares.
 c) The size of the state space should be $M*N*(L+1)$.We can use the Manhattan distance between the insect and the goal as our non-trivial admissible heuristic.
@@ -30,10 +30,10 @@ The path solution is $A-C-F$.
 The path solution is $A-B-D-G$.
 4. h1, h2, h3 are admissible.
 5. h1, h2 are consistent.
-6. $A-B-C-D-F-D-G$ 
-7. $A-C-B-D-G$
+6. $A-B-C-D-F-G$ 
+7. $A-C-D-B-G$
 8. $A-C-D-G$
-9. $A-C-D-G$
+9. $A-C-F$
 
 ## Part2 Train CSP
 1.Domain: $\{1,2,3\}$
@@ -363,7 +363,7 @@ def astar(state, heuristic):
             for child_node in get_successors(node):
                 if child_node[1] not in closed:
                     cost = heuristic(child_node[1])+costs[node]+1
-                    costs[child_node[1]] = cost
+                    costs[child_node[1]] = costs[node]+1
                     heappush(fringe,(cost,child_node[1]))
                     parents[child_node[1]]=[node,child_node[0]]
                     max_fringe = max(len(fringe), max_fringe)

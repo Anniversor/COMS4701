@@ -307,7 +307,7 @@ def astar(state, heuristic):
             for child_node in get_successors(node):
                 if child_node[1] not in closed:
                     cost = heuristic(child_node[1])+costs[node]+1
-                    costs[child_node[1]] = cost
+                    costs[child_node[1]] = costs[node]+1
                     heappush(fringe,(cost,child_node[1]))
                     parents[child_node[1]]=[node,child_node[0]]
                     max_fringe = max(len(fringe), max_fringe)
