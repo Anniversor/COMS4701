@@ -85,7 +85,7 @@ def select_move_minimax(board, color):
 ############ ALPHA-BETA PRUNING #####################
 
 states_cache = {}
-limit = 7
+limit = 6
 #alphabeta_min_node(board, color, alpha, beta, level, limit)
 def alphabeta_min_node(board, color, alpha, beta, level, limit): 
     anti_color = 3 - color

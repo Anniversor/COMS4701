@@ -1,5 +1,4 @@
 # Homework 2
-
 ## Part 1: Graph or Tree
 
 1. 
@@ -28,7 +27,6 @@ If (C,E,F)=(2,2,2), there is a conflict that E should be greater than C, So we r
    |9|7|3|$\infty$|7|-|
    |10|4|3|7|4|-|
    |11|6|3|4|4|-|
-   |12|D|3|$\infty$|1|-|
    |12|D|3|$\infty$|1|-|
    |13|D|4|$\infty$|4|1,3|
    So the player A should choose the third row.
