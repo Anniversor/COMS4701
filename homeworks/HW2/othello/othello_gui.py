@@ -136,7 +136,7 @@ def main():
     else: 
         p1 = Player(1)
         p2 = Player(2)
-    game = OthelloGameManager(dimension=8)
+    game = OthelloGameManager(dimension=4)
     gui = OthelloGui(game, p1, p2) 
     gui.run()
 

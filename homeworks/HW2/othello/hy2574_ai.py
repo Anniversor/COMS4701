@@ -36,14 +36,14 @@ def compute_utility(board, color):
 def minimax_min_node(board, color):
     anti_color = 3 - color
     moves = get_possible_moves(board, anti_color)
+    if not moves:
+        return compute_utility(board, color)
     mini_score = float("inf")
 
     for move in moves:
         new_board = play_move(board, anti_color, move[0], move[1])
-        if  not get_possible_moves(new_board, color) :
-            score = compute_utility(new_board, color)
-        else:
-            score = minimax_max_node(new_board, color)
+        
+        score = minimax_max_node(new_board, color)
 
         if score<mini_score:
             mini_score = score
@@ -52,16 +52,15 @@ def minimax_min_node(board, color):
 
 
 def minimax_max_node(board, color):
-    anti_color = 3 - color
+
     moves = get_possible_moves(board, color)
+    if not moves:
+        return compute_utility(board, color)
     max_score = float("-inf")
 
     for move in moves:
         new_board = play_move(board, color, move[0], move[1])
-        if not get_possible_moves(new_board, anti_color):
-            score = compute_utility(new_board, color)
-        else:
-            score = minimax_min_node(new_board, color)
+        score = minimax_min_node(new_board, color)
         if score>max_score:
             max_score = score
 
@@ -71,7 +70,7 @@ def minimax_max_node(board, color):
 def select_move_minimax(board, color):
     moves = get_possible_moves(board, color)
     max_score = float("-inf")
-    best_move = [0, 0]
+    best_move = [moves[0][0],moves[0][1]]
     for move in moves:
         new_board = play_move(board, color, move[0], move[1])
         score = minimax_min_node(new_board, color)
@@ -86,29 +85,31 @@ def select_move_minimax(board, color):
 ############ ALPHA-BETA PRUNING #####################
 
 states_cache = {}
-limit = 5
+limit = 7
 #alphabeta_min_node(board, color, alpha, beta, level, limit)
 def alphabeta_min_node(board, color, alpha, beta, level, limit): 
     anti_color = 3 - color
     moves = get_possible_moves(board, anti_color)
+    if not moves:
+        states_cache[board] = compute_utility(board, color) #update cache
+        return compute_utility(board, color)
     mini_score = float("inf")
     boards = []
 
     for move in moves:
         boards.append(play_move(board, anti_color, move[0], move[1]))
-    boards.sort(key=lambda x:compute_utility(x,color), reverse=True)
-
+    boards.sort(key=lambda x:compute_utility(x,color))
 
     for new_board in boards:
         # new_board = play_move(board, anti_color, move[0], move[1])
-        if (new_board, color) in states_cache:
-            score = states_cache[(new_board, color)]
+        if new_board in states_cache:
+            score = states_cache[new_board]
         else:
-            if  not get_possible_moves(new_board, color) or level>=limit :
+            if level>=limit:
                 score = compute_utility(new_board, color)
             else:
                 score = alphabeta_max_node(new_board, color, alpha, beta,level+1,limit)
-            states_cache[(new_board, color)] = score
+                states_cache[new_board] = score
         
         if score<mini_score:
             mini_score = score
@@ -120,8 +121,11 @@ def alphabeta_min_node(board, color, alpha, beta, level, limit):
 
 #alphabeta_max_node(board, color, alpha, beta, level, limit)
 def alphabeta_max_node(board, color, alpha, beta, level, limit):
-    anti_color = 3 - color
+
     moves = get_possible_moves(board, color)
+    if not moves:
+        states_cache[board] = compute_utility(board, color) #update cache
+        return compute_utility(board, color)
     max_score = float("-inf")
     boards = []
     for move in moves:
@@ -130,18 +134,19 @@ def alphabeta_max_node(board, color, alpha, beta, level, limit):
 
     for new_board in boards:       
         # new_board = play_move(board, color, move[0], move[1])
-        if (new_board, anti_color) in states_cache:
-            score = states_cache[(new_board, anti_color)]
+        if new_board in states_cache:
+            score = states_cache[new_board]
         else:
-            if not get_possible_moves(new_board, anti_color) or level>limit:
+            if  level>=limit:
                 score = compute_utility(new_board, color)
             else:
                 score = alphabeta_min_node(new_board, color, alpha, beta,level+1,limit)
-            states_cache[(new_board, anti_color)] = score
+                states_cache[new_board] = score
 
         if score>max_score:
             max_score = score
         if max_score>=beta:
+
             return max_score
         alpha = max(alpha, max_score)
 
@@ -198,7 +203,7 @@ def run_ai():
                                   # 2 : light disk (player 2)
                     
             # Select the move and send it to the manager 
-            #movei, movej = select_move_minimax(board, color)
+            # movei, movej = select_move_minimax(board, color)
             movei, movej = select_move_alphabeta(board, color)
             print("{} {}".format(movei, movej)) 
 
