@@ -1,0 +1,4 @@
+{
+  "hy2574_hmm.py::test_filtering": true,
+  "hy2574_hmm.py::test_viterbi": true
+}
